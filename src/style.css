@@ -15,7 +15,7 @@ body,
   width: 100%;
   min-height: 100%;
   background: #dce7d0;
-  font-family: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+  font-family: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
 }
 
 #scene-canvas {
@@ -51,22 +51,92 @@ body,
   box-shadow: 0 6px 26px rgba(0, 0, 0, 0.22);
 }
 
-#rock-text {
+#love-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --card-scale: 0.86;
+  --card-rot-y: 24;
+  --shine-x: -30%;
+  --shine-loop: -120%;
+
   position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, -50%) scale(0.86);
-  margin: 0;
-  padding: clamp(8px, 1.2vw, 14px) clamp(12px, 2vw, 22px);
-  font-size: clamp(18px, 2.7vw, 40px);
-  font-weight: 600;
-  text-wrap: balance;
-  text-align: center;
-  color: var(--cream);
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+  left: 50%;
+  top: 50%;
+  width: min(78vw, 340px);
+  aspect-ratio: 0.72;
   opacity: 0;
-  transition: opacity 0.24s ease;
+  perspective: 1100px;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
   will-change: transform, opacity;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  transform-style: preserve-3d;
+  transform: scale(var(--card-scale)) rotateY(calc(var(--card-rot-y) * 1deg)) rotateX(var(--tilt-y)) rotateZ(calc(var(--tilt-x) * 0.35));
+  box-shadow: 0 20px 34px rgba(31, 9, 20, 0.35), 0 10px 50px rgba(255, 188, 221, 0.22);
+  transition: box-shadow 0.3s ease;
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  padding: clamp(16px, 3.2vw, 24px);
+  color: #fff9ff;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.42), transparent 26%),
+    radial-gradient(circle at 80% 85%, rgba(255, 165, 201, 0.42), transparent 38%),
+    linear-gradient(165deg, #d65f8d, #9d4f78 55%, #6f3860);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.card-face::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background: linear-gradient(110deg, transparent 28%, rgba(255, 255, 255, 0.55) 48%, transparent 66%);
+  transform: translateX(var(--shine-x));
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.card-face::after {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(110deg, transparent 24%, rgba(255, 255, 255, 0.25) 45%, transparent 63%);
+  transform: translateX(var(--shine-loop));
+  opacity: 0.56;
+  pointer-events: none;
+}
+
+.card-kicker {
+  margin: 0;
+  font-size: clamp(11px, 2.4vw, 13px);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+
+#love-card h1 {
+  margin: clamp(14px, 4vh, 28px) 0;
+  font-size: clamp(24px, 4.2vw, 34px);
+  line-height: 1.08;
+  text-wrap: balance;
+  text-shadow: 0 2px 12px rgba(35, 8, 20, 0.35);
+}
+
+.card-sign {
+  margin: 0;
+  font-size: clamp(14px, 2.5vw, 16px);
+  opacity: 0.92;
 }
 
 #scroll-container {
@@ -79,9 +149,8 @@ body,
 }
 
 @media (max-width: 768px) {
-  #rock-text {
-    max-width: min(92vw, 360px);
-    line-height: 1.15;
+  #love-card {
+    width: min(86vw, 320px);
   }
 
   #scroll-hint {
