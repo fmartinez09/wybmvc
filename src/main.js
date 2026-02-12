@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const canvas = document.querySelector('#scene-canvas');
 const scrollContainer = document.querySelector('#scroll-container');
-const rockText = document.querySelector('#rock-text');
+const card = document.querySelector('#love-card');
 const scrollHint = document.querySelector('#scroll-hint');
 
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -15,7 +15,11 @@ const experience = createExperience(canvas, isMobile);
 
 const { state } = experience;
 
-// Single scrubbed timeline with three narrative sections.
+let pointerTiltX = 0;
+let pointerTiltY = 0;
+let pointerTargetX = 0;
+let pointerTargetY = 0;
+
 const timeline = gsap.timeline({
   scrollTrigger: {
     trigger: scrollContainer,
@@ -26,7 +30,6 @@ const timeline = gsap.timeline({
   },
 });
 
-// Section A: calm meadow traversal.
 timeline.to(
   state,
   {
@@ -42,7 +45,6 @@ timeline.to(
 );
 timeline.to(state, { hintAlpha: 0.15, duration: 0.4, ease: 'none' }, 0);
 
-// Section B: tree reveal, slight camera yaw, atmospheric clarity.
 timeline.to(
   state,
   {
@@ -58,7 +60,6 @@ timeline.to(
   0.4,
 );
 
-// Section C: settle near the rock and reveal the romantic question.
 timeline.to(
   state,
   {
@@ -68,8 +69,12 @@ timeline.to(
     lookY: 1.4,
     lookZ: -57,
     rockReveal: 1,
-    textAlpha: 1,
-    textScale: isMobile ? 1.05 : 1.12,
+    romance: 1,
+    heartsAlpha: 0.8,
+    cardAlpha: 1,
+    cardScale: isMobile ? 1.02 : 1.08,
+    cardRotate: 0,
+    cardShimmer: 1,
     hintAlpha: 0,
     duration: 0.25,
     ease: 'power1.inOut',
@@ -77,15 +82,56 @@ timeline.to(
   0.75,
 );
 
+timeline.to(
+  state,
+  {
+    cardShimmer: 0,
+    duration: 0.18,
+    ease: 'none',
+  },
+  0.91,
+);
+
+const shineTween = gsap.to(card, {
+  '--shine-loop': '120%',
+  duration: 2.3,
+  repeat: -1,
+  ease: 'none',
+  paused: true,
+});
+
+ScrollTrigger.create({
+  trigger: scrollContainer,
+  start: '66% top',
+  end: 'bottom bottom',
+  onEnter: () => shineTween.play(),
+  onEnterBack: () => shineTween.play(),
+  onLeaveBack: () => shineTween.pause(0),
+});
+
+if (!isMobile) {
+  window.addEventListener('pointermove', (event) => {
+    const px = event.clientX / window.innerWidth - 0.5;
+    const py = event.clientY / window.innerHeight - 0.5;
+    pointerTargetX = gsap.utils.clamp(-5, 5, px * 9);
+    pointerTargetY = gsap.utils.clamp(-4, 4, -py * 8);
+  });
+}
+
 let rafId = 0;
-const clock = { last: performance.now() };
 
 function frame(now) {
   const elapsed = now * 0.001;
-  experience.update(elapsed, rockText);
+
+  pointerTiltX += (pointerTargetX - pointerTiltX) * 0.08;
+  pointerTiltY += (pointerTargetY - pointerTiltY) * 0.08;
+  card.style.setProperty('--tilt-x', `${pointerTiltX.toFixed(3)}deg`);
+  card.style.setProperty('--tilt-y', `${pointerTiltY.toFixed(3)}deg`);
+
+  experience.update(elapsed, card);
   scrollHint.style.opacity = `${state.hintAlpha}`;
+
   rafId = requestAnimationFrame(frame);
-  clock.last = now;
 }
 
 rafId = requestAnimationFrame(frame);
@@ -99,5 +145,6 @@ window.addEventListener('beforeunload', () => {
   cancelAnimationFrame(rafId);
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   timeline.kill();
+  shineTween.kill();
   experience.renderer.dispose();
 });
