@@ -1,6 +1,7 @@
 :root {
   color-scheme: dark;
   --cream: #fff6ec;
+  --romance-bg: #f0bfd5;
   --shadow: rgba(7, 12, 22, 0.42);
 }
 
@@ -14,7 +15,7 @@ body,
   margin: 0;
   width: 100%;
   min-height: 100%;
-  background: #dce7d0;
+  background: var(--romance-bg);
   font-family: 'Inter', 'Avenir Next', 'Segoe UI', sans-serif;
 }
 
@@ -90,10 +91,12 @@ body,
   padding: clamp(16px, 3.2vw, 24px);
   color: #fff9ff;
   background:
-    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.42), transparent 26%),
-    radial-gradient(circle at 80% 85%, rgba(255, 165, 201, 0.42), transparent 38%),
-    linear-gradient(165deg, #d65f8d, #9d4f78 55%, #6f3860);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.28), transparent 28%),
+    radial-gradient(circle at 80% 85%, rgba(255, 165, 201, 0.26), transparent 40%),
+    linear-gradient(165deg, rgba(214, 95, 141, 0.62), rgba(157, 79, 120, 0.55) 55%, rgba(111, 56, 96, 0.48));
+  border: 1px solid rgba(255, 255, 255, 0.33);
+  backdrop-filter: blur(14px) saturate(122%);
+  -webkit-backdrop-filter: blur(14px) saturate(122%);
 }
 
 .card-face::before {
