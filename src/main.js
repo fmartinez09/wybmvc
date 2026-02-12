@@ -26,7 +26,6 @@ const timeline = gsap.timeline({
     start: 'top top',
     end: 'bottom bottom',
     scrub: 0.8,
-    pin: '#scene-canvas',
   },
 });
 

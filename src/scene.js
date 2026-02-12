@@ -767,8 +767,6 @@ export function createExperience(canvas, isMobile) {
     cardShimmer: 0,
   };
 
-  const overlayPoint = new THREE.Vector3();
-
   function resize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -865,17 +863,13 @@ export function createExperience(canvas, isMobile) {
     }
 
     if (rock.visible) {
-      overlayPoint.copy(rock.position).add(new THREE.Vector3(0, 1.55, 0.1)).project(camera);
-      const sx = (overlayPoint.x * 0.5 + 0.5) * window.innerWidth;
-      const sy = (-overlayPoint.y * 0.5 + 0.5) * window.innerHeight;
-
-      cardElement.style.left = `${sx}px`;
-      cardElement.style.top = `${sy}px`;
+      cardElement.style.left = '50%';
+      cardElement.style.top = '50%';
       cardElement.style.opacity = `${state.cardAlpha}`;
       cardElement.style.setProperty('--card-scale', `${state.cardScale}`);
       cardElement.style.setProperty('--card-rot-y', `${state.cardRotate}`);
       cardElement.style.setProperty('--shine-x', `${state.cardShimmer * 130 - 20}%`);
-      cardElement.style.transform = `translate(-50%, -50%)`;
+      cardElement.style.transform = 'translate(-50%, -50%)';
     }
 
     renderer.render(scene, camera);
