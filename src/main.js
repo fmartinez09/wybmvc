@@ -9,6 +9,7 @@ const canvas = document.querySelector('#scene-canvas');
 const scrollContainer = document.querySelector('#scroll-container');
 const card = document.querySelector('#love-card');
 const scrollHint = document.querySelector('#scroll-hint');
+const relationshipCounter = document.querySelector('#relationship-counter');
 
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
 const experience = createExperience(canvas, isMobile);
@@ -19,6 +20,53 @@ let pointerTiltX = 0;
 let pointerTiltY = 0;
 let pointerTargetX = 0;
 let pointerTargetY = 0;
+
+function updateRelationshipCounter() {
+  if (!relationshipCounter) {
+    return;
+  }
+
+  const startDate = new Date(2022, 9, 8, 0, 0, 0);
+  const now = new Date();
+
+  let years = now.getFullYear() - startDate.getFullYear();
+  let months = now.getMonth() - startDate.getMonth();
+  let days = now.getDate() - startDate.getDate();
+  let hours = now.getHours() - startDate.getHours();
+  let minutes = now.getMinutes() - startDate.getMinutes();
+  let seconds = now.getSeconds() - startDate.getSeconds();
+
+  if (seconds < 0) {
+    seconds += 60;
+    minutes -= 1;
+  }
+
+  if (minutes < 0) {
+    minutes += 60;
+    hours -= 1;
+  }
+
+  if (hours < 0) {
+    hours += 24;
+    days -= 1;
+  }
+
+  if (days < 0) {
+    const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += previousMonth.getDate();
+    months -= 1;
+  }
+
+  if (months < 0) {
+    months += 12;
+    years -= 1;
+  }
+
+  relationshipCounter.textContent = `${years}.${months}.${days}.${hours}.${minutes}.${seconds} desde que estamos juntos`;
+}
+
+updateRelationshipCounter();
+setInterval(updateRelationshipCounter, 1000);
 
 const timeline = gsap.timeline({
   scrollTrigger: {
