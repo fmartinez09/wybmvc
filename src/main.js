@@ -71,6 +71,8 @@ let pointerTargetY = 0;
 let isTouchTilting = false;
 let rafId = 0;
 
+ScrollTrigger.normalizeScroll(true);
+
 const timeline = gsap.timeline({
   scrollTrigger: {
     trigger: scrollContainer,
