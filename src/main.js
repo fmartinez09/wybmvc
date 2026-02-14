@@ -62,7 +62,7 @@ function updateRelationshipCounter() {
     years -= 1;
   }
 
-  relationshipCounter.textContent = `${years}.${months}.${days}.${hours}.${minutes}.${seconds} desde que estamos juntos`;
+  relationshipCounter.textContent = `${years} años ${months} meses ${days} dias ${hours} horas ${minutes} minutos y ${seconds} segundos desde que estamos juntos`;
 }
 
 updateRelationshipCounter();
