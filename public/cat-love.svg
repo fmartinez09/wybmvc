@@ -1,0 +1,23 @@
+<svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Gatito enamorado</title>
+  <desc id="desc">Ilustración de un gatito blanco abrazando un corazón rosa con corazones alrededor.</desc>
+  <rect width="240" height="180" rx="24" fill="url(#bg)"/>
+  <path d="M68 75C68 57.3269 82.3269 43 100 43H140C157.673 43 172 57.3269 172 75V96C172 113.673 157.673 128 140 128H100C82.3269 128 68 113.673 68 96V75Z" fill="#FFF8FB"/>
+  <ellipse cx="94" cy="84" rx="8" ry="10" fill="#392233"/>
+  <ellipse cx="146" cy="84" rx="8" ry="10" fill="#392233"/>
+  <circle cx="94" cy="82" r="2.4" fill="#FFF"/>
+  <circle cx="146" cy="82" r="2.4" fill="#FFF"/>
+  <path d="M120 93C125 93 129 96.5 129 100C129 103.5 125 108 120 108C115 108 111 103.5 111 100C111 96.5 115 93 120 93Z" fill="#F6A8C7"/>
+  <path d="M76 58L94 44L104 68" fill="#FFF8FB"/>
+  <path d="M164 58L146 44L136 68" fill="#FFF8FB"/>
+  <path d="M120 146C109 136 94 127 94 112C94 102 102 95 111 95C116 95 120 97 120 101C120 97 124 95 129 95C138 95 146 102 146 112C146 127 131 136 120 146Z" fill="#F55D9D"/>
+  <path d="M47 42C42 36 42 28 48 24C53 21 59 23 63 28C67 23 73 21 78 24C84 28 84 36 79 42L63 58L47 42Z" fill="#FF8DBA"/>
+  <path d="M182 34C178 29 178 22 184 19C188 17 193 19 196 23C199 19 204 17 208 19C214 22 214 29 210 34L196 48L182 34Z" fill="#FF9FC5"/>
+  <path d="M190 84C187 80 187 75 191 73C194 71 198 72 200 75C202 72 206 71 209 73C213 75 213 80 210 84L200 95L190 84Z" fill="#FFC3DA"/>
+  <defs>
+    <linearGradient id="bg" x1="16" y1="16" x2="224" y2="164" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD7E7"/>
+      <stop offset="1" stop-color="#F8B9D2"/>
+    </linearGradient>
+  </defs>
+</svg>
