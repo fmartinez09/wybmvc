@@ -10,6 +10,8 @@ const scrollContainer = document.querySelector('#scroll-container');
 const card = document.querySelector('#love-card');
 const scrollHint = document.querySelector('#scroll-hint');
 const relationshipCounter = document.querySelector('#relationship-counter');
+const yesButton = document.querySelector('.card-yes-button');
+const cardFace = document.querySelector('.card-face');
 
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
 const experience = createExperience(canvas, isMobile);
@@ -67,6 +69,12 @@ function updateRelationshipCounter() {
 
 updateRelationshipCounter();
 setInterval(updateRelationshipCounter, 1000);
+
+if (yesButton && cardFace) {
+  yesButton.addEventListener('click', () => {
+    cardFace.classList.add('is-accepted');
+  });
+}
 
 const timeline = gsap.timeline({
   scrollTrigger: {
