@@ -187,8 +187,8 @@ function makeGrassTexture() {
   return texture;
 }
 
-function createGrass(qualityProfile) {
-  const count = qualityProfile.grassCount;
+function createGrass(isMobile) {
+  const count = isMobile ? 7000 : 15000;
   const blade = new THREE.PlaneGeometry(0.1, 1.1, 1, 5);
   blade.translate(0, 0.55, 0);
 
@@ -200,7 +200,7 @@ function createGrass(qualityProfile) {
     side: THREE.DoubleSide,
     alphaTest: 0.1,
   });
-  addWindShader(mat, qualityProfile.windAmp, qualityProfile.windSpeed, true);
+  addWindShader(mat, isMobile ? 0.12 : 0.2, 0.9, true);
 
   const mesh = new THREE.InstancedMesh(blade, mat, count);
   mesh.castShadow = false;
@@ -282,8 +282,8 @@ function makeCenterTexture() {
   return texture;
 }
 
-function createDaisies(qualityProfile) {
-  const flowerCount = qualityProfile.daisyCount;
+function createDaisies(isMobile) {
+  const flowerCount = isMobile ? 380 : 840;
   const petalsPerFlower = 14;
 
   const stemGeo = new THREE.CylinderGeometry(0.02, 0.034, 0.88, 6);
@@ -443,7 +443,7 @@ function makeBarkTexture() {
   return map;
 }
 
-function createTree(qualityProfile) {
+function createTree(isMobile) {
   const treeGroup = new THREE.Group();
   const barkTexture = makeBarkTexture();
 
@@ -467,7 +467,7 @@ function createTree(qualityProfile) {
     treeGroup.add(branch);
   }
 
-  const blossomCount = qualityProfile.blossomCount;
+  const blossomCount = isMobile ? 540 : 1200;
   const bloomGeo = new THREE.IcosahedronGeometry(0.16, 0);
   const bloomMat = new THREE.MeshStandardMaterial({
     color: '#ffd3e7',
@@ -597,8 +597,8 @@ function makeCloudTexture() {
   return texture;
 }
 
-function createCloudLayer(qualityProfile) {
-  const count = qualityProfile.cloudCount;
+function createCloudLayer(isMobile) {
+  const count = isMobile ? 20 : 36;
   const geo = new THREE.PlaneGeometry(9, 4.5);
   const mat = new THREE.MeshBasicMaterial({
     map: makeCloudTexture(),
@@ -645,8 +645,8 @@ function makeHeartTexture() {
   return texture;
 }
 
-function createHeartParticles(qualityProfile) {
-  const count = qualityProfile.heartCount;
+function createHeartParticles(isMobile) {
+  const count = isMobile ? 90 : 170;
   const geo = new THREE.PlaneGeometry(0.55, 0.55);
   const mat = new THREE.MeshBasicMaterial({
     map: makeHeartTexture(),
@@ -672,7 +672,7 @@ function createHeartParticles(qualityProfile) {
     baseX[i] = randomRange(-18, 16);
     baseY[i] = randomRange(1, 18);
     baseZ[i] = randomRange(-82, -42);
-    speed[i] = randomRange(0.55, 1.1) * qualityProfile.heartSpeedScale;
+    speed[i] = randomRange(0.55, 1.1);
     drift[i] = randomRange(0.3, 0.9);
     rot[i] = randomRange(-1, 1);
     phase[i] = Math.random() * Math.PI * 2;
@@ -688,15 +688,15 @@ function createHeartParticles(qualityProfile) {
   return { hearts, baseX, baseY, baseZ, speed, drift, rot, phase, rangeY: 20 };
 }
 
-export function createExperience(canvas, qualityProfile) {
+export function createExperience(canvas, isMobile) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, qualityProfile.maxDpr));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = qualityProfile.shadowsEnabled;
+  renderer.shadowMap.enabled = !isMobile;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = qualityProfile.toneMappingExposure;
+  renderer.toneMappingExposure = isMobile ? 1.02 : 1.08;
 
   const scene = new THREE.Scene();
   const bgBase = new THREE.Color('#bfd8d0');
@@ -704,22 +704,22 @@ export function createExperience(canvas, qualityProfile) {
   scene.background = bgBase.clone();
   scene.fog = new THREE.Fog(bgBase.clone(), 18, 130);
 
-  const camera = new THREE.PerspectiveCamera(qualityProfile.getCameraFov(window.innerWidth / window.innerHeight), window.innerWidth / window.innerHeight, 0.1, 220);
-  camera.position.set(0, qualityProfile.cameraBaseY, 14);
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 220);
+  camera.position.set(0, 2.35, 14);
 
   const skyDome = createSkyDome();
   scene.add(skyDome);
 
-  const clouds = createCloudLayer(qualityProfile);
+  const clouds = createCloudLayer(isMobile);
   scene.add(clouds);
 
   const hemi = new THREE.HemisphereLight('#ffe7c5', '#5f7f66', 0.95);
   scene.add(hemi);
 
-  const sun = new THREE.DirectionalLight('#fff5d8', qualityProfile.sunIntensity);
+  const sun = new THREE.DirectionalLight('#fff5d8', isMobile ? 1.3 : 1.55);
   sun.position.set(14, 24, 10);
-  sun.castShadow = qualityProfile.shadowsEnabled;
-  sun.shadow.mapSize.set(qualityProfile.shadowMapSize, qualityProfile.shadowMapSize);
+  sun.castShadow = !isMobile;
+  sun.shadow.mapSize.set(1024, 1024);
   sun.shadow.camera.near = 2;
   sun.shadow.camera.far = 80;
   sun.shadow.camera.left = -35;
@@ -731,29 +731,29 @@ export function createExperience(canvas, qualityProfile) {
   const ground = createGround();
   scene.add(ground);
 
-  const grass = createGrass(qualityProfile);
+  const grass = createGrass(isMobile);
   scene.add(grass);
 
-  const daisies = createDaisies(qualityProfile);
+  const daisies = createDaisies(isMobile);
   scene.add(daisies.stems, daisies.leaves, daisies.heads, daisies.petals);
 
-  const { treeGroup, blossoms } = createTree(qualityProfile);
+  const { treeGroup, blossoms } = createTree(isMobile);
   scene.add(treeGroup);
 
   const rock = createRock();
   rock.visible = false;
   scene.add(rock);
 
-  const heartsData = createHeartParticles(qualityProfile);
+  const heartsData = createHeartParticles(isMobile);
   heartsData.hearts.visible = false;
   scene.add(heartsData.hearts);
 
   const state = {
     camX: 0,
-    camY: qualityProfile.cameraBaseY,
+    camY: 2.35,
     camZ: 14,
     lookX: 0,
-    lookY: qualityProfile.lookBaseY,
+    lookY: 1.7,
     lookZ: -20,
     treeProgress: 0,
     fogFar: 130,
@@ -768,21 +768,15 @@ export function createExperience(canvas, qualityProfile) {
   };
 
   function resize() {
-    const aspect = window.innerWidth / window.innerHeight;
-    camera.aspect = aspect;
-    camera.fov = qualityProfile.getCameraFov(aspect);
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, qualityProfile.maxDpr));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = qualityProfile.shadowsEnabled;
-    renderer.toneMappingExposure = qualityProfile.toneMappingExposure;
-    sun.castShadow = qualityProfile.shadowsEnabled;
-    sun.shadow.mapSize.set(qualityProfile.shadowMapSize, qualityProfile.shadowMapSize);
   }
 
   function update(timeSec, cardElement) {
-    const swayX = Math.sin(timeSec * 0.24) * qualityProfile.cameraSwayX;
-    const swayY = Math.cos(timeSec * 0.18) * qualityProfile.cameraSwayY;
+    const swayX = Math.sin(timeSec * 0.24) * 0.035;
+    const swayY = Math.cos(timeSec * 0.18) * 0.025;
 
     camera.position.set(state.camX + swayX, state.camY + swayY, state.camZ);
     camera.lookAt(state.lookX, state.lookY, state.lookZ);
@@ -793,7 +787,7 @@ export function createExperience(canvas, qualityProfile) {
     scene.fog.color.copy(tmpColor);
 
     hemi.intensity = 0.95 - state.romance * 0.15;
-    sun.intensity = qualityProfile.sunIntensity - state.romance * 0.24;
+    sun.intensity = (isMobile ? 1.3 : 1.55) - state.romance * 0.24;
     skyDome.material.uniforms.uTop.value.set('#9ccde4').lerp(new THREE.Color('#f0bcd4'), state.romance);
     skyDome.material.uniforms.uHorizon.value.set('#f2e7d6').lerp(new THREE.Color('#f6dce8'), state.romance);
     skyDome.material.uniforms.uSunIntensity.value = 0.3 - state.romance * 0.12;
@@ -808,7 +802,7 @@ export function createExperience(canvas, qualityProfile) {
 
     for (let i = 0; i < daisies.flowerCount; i += 1) {
       const base = daisies.bases[i];
-      const sway = Math.sin(timeSec * 1.25 + daisies.offsets[i]) * qualityProfile.daisySwayAmp;
+      const sway = Math.sin(timeSec * 1.25 + daisies.offsets[i]) * 0.04;
 
       tmpObject.position.set(base.x, 0.06, base.z);
       tmpObject.rotation.set(base.rot + sway, 0, 0);
@@ -857,11 +851,11 @@ export function createExperience(canvas, qualityProfile) {
       for (let i = 0; i < heartsData.baseX.length; i += 1) {
         const loop = (timeSec * heartsData.speed[i] + heartsData.phase[i]) % heartsData.rangeY;
         const y = heartsData.baseY[i] + (heartsData.rangeY - loop) - 9;
-        const x = heartsData.baseX[i] + Math.sin(timeSec * heartsData.drift[i] + heartsData.phase[i]) * qualityProfile.heartDriftX;
-        const z = heartsData.baseZ[i] + Math.cos(timeSec * heartsData.drift[i] * 0.6 + heartsData.phase[i]) * qualityProfile.heartDriftZ;
+        const x = heartsData.baseX[i] + Math.sin(timeSec * heartsData.drift[i] + heartsData.phase[i]) * 0.8;
+        const z = heartsData.baseZ[i] + Math.cos(timeSec * heartsData.drift[i] * 0.6 + heartsData.phase[i]) * 0.4;
         tmpObject.position.set(x, y, z);
         tmpObject.rotation.set(0, 0, timeSec * heartsData.rot[i]);
-        tmpObject.scale.setScalar(0.85 + Math.sin(timeSec + heartsData.phase[i]) * qualityProfile.heartScaleAmp);
+        tmpObject.scale.setScalar(0.85 + Math.sin(timeSec + heartsData.phase[i]) * 0.15);
         tmpObject.updateMatrix();
         heartsData.hearts.setMatrixAt(i, tmpObject.matrix);
       }
