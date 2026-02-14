@@ -70,6 +70,7 @@ body,
   transform: translate(-50%, -50%);
   transform-style: preserve-3d;
   will-change: transform, opacity;
+  pointer-events: auto;
 }
 
 .card-inner {
@@ -88,6 +89,10 @@ body,
   inset: 0;
   border-radius: 22px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
   padding: clamp(16px, 3.2vw, 24px);
   color: #fff9ff;
   background:
@@ -97,6 +102,70 @@ body,
   border: 1px solid rgba(255, 255, 255, 0.33);
   backdrop-filter: blur(14px) saturate(122%);
   -webkit-backdrop-filter: blur(14px) saturate(122%);
+}
+
+.card-face > * {
+  position: relative;
+  z-index: 2;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.card-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.card-success-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.45s ease;
+}
+
+.heart-rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.heart-rain .heart {
+  position: absolute;
+  top: -12%;
+  font-size: clamp(16px, 2vw, 24px);
+  animation: heart-fall linear forwards;
+  filter: drop-shadow(0 4px 8px rgba(60, 7, 36, 0.28));
+}
+
+@keyframes heart-fall {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translate3d(var(--heart-drift), 130%, 0) scale(1.12);
+    opacity: 0;
+  }
 }
 
 .card-face::before {
@@ -113,12 +182,33 @@ body,
 .card-face::after {
   content: '';
   position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(18, 5, 13, 0.3), rgba(52, 13, 31, 0.54));
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-inner::after {
+  content: '';
+  position: absolute;
   inset: -30%;
   background: linear-gradient(110deg, transparent 24%, rgba(255, 255, 255, 0.25) 45%, transparent 63%);
   transform: translateX(var(--shine-loop));
   opacity: 0.56;
   pointer-events: none;
+  z-index: 3;
 }
+
+.card-face.is-accepted .card-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-face.is-accepted .card-success-image {
+  opacity: 1;
+}
+
 
 .card-kicker {
   margin: 0;
@@ -143,12 +233,25 @@ body,
 }
 
 
-.card-photo {
-  display: block;
-  width: min(68%, 180px);
-  margin: 14px auto 10px;
-  filter: drop-shadow(0 6px 16px rgba(57, 15, 37, 0.28));
+.card-yes-button {
+  align-self: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-size: clamp(15px, 2.7vw, 17px);
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffe3f3, #ffd1ea);
+  color: #8d245f;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(19, 4, 12, 0.3);
 }
+
+.card-yes-button:focus-visible {
+  outline: 2px solid #fff5fb;
+  outline-offset: 2px;
+}
+
+
 
 #relationship-counter {
   margin: 0;

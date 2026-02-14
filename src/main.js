@@ -10,6 +10,10 @@ const scrollContainer = document.querySelector('#scroll-container');
 const card = document.querySelector('#love-card');
 const scrollHint = document.querySelector('#scroll-hint');
 const relationshipCounter = document.querySelector('#relationship-counter');
+const yesButton = document.querySelector('.card-yes-button');
+const cardFace = document.querySelector('.card-face');
+const heartRain = document.querySelector('.heart-rain');
+
 
 const isMobile = window.matchMedia('(max-width: 768px)').matches;
 const experience = createExperience(canvas, isMobile);
@@ -67,6 +71,45 @@ function updateRelationshipCounter() {
 
 updateRelationshipCounter();
 setInterval(updateRelationshipCounter, 1000);
+
+function spawnHeart() {
+  if (!heartRain) {
+    return;
+  }
+
+  const heart = document.createElement('span');
+  heart.className = 'heart';
+  heart.textContent = '💖';
+  heart.style.left = `${Math.random() * 100}%`;
+  heart.style.animationDuration = `${1.9 + Math.random() * 1.5}s`;
+  heart.style.setProperty('--heart-drift', `${-24 + Math.random() * 48}px`);
+  heartRain.appendChild(heart);
+
+  window.setTimeout(() => {
+    heart.remove();
+  }, 3600);
+}
+
+if (yesButton && cardFace) {
+  yesButton.addEventListener('click', () => {
+    if (cardFace.classList.contains('is-accepted')) {
+      return;
+    }
+
+    cardFace.classList.add('is-accepted');
+
+    for (let i = 0; i < 16; i += 1) {
+      window.setTimeout(spawnHeart, i * 120);
+    }
+
+    const heartBurstInterval = window.setInterval(spawnHeart, 220);
+    window.setTimeout(() => {
+      window.clearInterval(heartBurstInterval);
+    }, 4500);
+  });
+}
+
+
 
 const timeline = gsap.timeline({
   scrollTrigger: {
